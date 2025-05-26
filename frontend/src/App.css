@@ -6,10 +6,13 @@
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  height: 30em;
+  padding: 0.3em;
   will-change: filter;
   transition: filter 300ms;
+  background-color: aliceblue;
+  border-radius: 70%;
+  animation: logo-spin infinite 12s linear;
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
@@ -27,10 +30,10 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.card {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 
