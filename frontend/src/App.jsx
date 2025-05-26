@@ -9,21 +9,33 @@ function HomePage() {
   const [eventName, setEventName] = useState('')
   const navigate = useNavigate()
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = async () => {
     if (eventName.trim() === '') {
       alert('Por favor, poné un nombre para el evento.')
       return
     }
+  
     const id = generateEventId()
-
-    // Acá podrías guardar el nombre del evento en la DB (cuando tengas backend)
-    // Por ahora lo pasamos como state opcional
-    navigate(`/tertulia/${id}`, { state: { name: eventName } })
+  
+    try {
+      const res = await fetch('http://localhost:3001/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, name: eventName }),
+      })
+  
+      if (!res.ok) throw new Error('Error al crear evento.')
+  
+      navigate(`/tertulia/${id}`, { state: { name: eventName } })
+    } catch (err) {
+      console.error(err)
+      alert('Hubo un error creando el evento.')
+    }
   }
 
   return (
     <div>
-      <img src='/public/Tertuliapp logo.png'></img>
+      <img src='/public/Tertuliapp logo white.svg'></img>
       <h1>TertuliApp</h1>
       <label>
         Nombre del evento:{' '}
@@ -59,20 +71,34 @@ function EventPage({ eventId, eventName }) {
     setTo('')
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name || slots.length === 0) {
       alert('Poné tu nombre y al menos un rango de horario.')
       return
     }
-
-    const availability = {
+  
+    const payload = {
+      eventId: eventId,
       name,
       slots,
     }
-
-    console.log('Disponibilidad enviada:', availability)
-    setSubmitted(true)
+  
+    try {
+      const res = await fetch('http://localhost:3001/api/availability', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+  
+      if (!res.ok) throw new Error('Error al guardar disponibilidad.')
+  
+      setSubmitted(true)
+    } catch (err) {
+      console.error(err)
+      alert('Hubo un error al enviar tu disponibilidad.')
+    }
   }
+  
 
   if (submitted) {
     return (
