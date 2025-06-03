@@ -36,10 +36,13 @@ db.serialize(() => {
 app.post('/api/tertulias', (req, res) => {
   const { id, name } = req.body
   db.run('INSERT INTO tertulias (id, name) VALUES (?, ?)', [id, name], (err) => {
-    if (err) return res.status(500).json({ error: err.message })
-    res.json({ success: true })
-  })
-})
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ success: true });
+  });
+});
 
 // Ruta para obtener el nombre de una tertulia
 app.get('/api/tertulias/:id', (req, res) => {
